@@ -27,11 +27,13 @@ fun noteitem.toentitywhenupser():model {
 
 fun model.toNoteItem(): noteitem {
     return noteitem(
+
         title = title,
         description = description,
         imageUrl = imageUrl,
         dateAdded = dateAdded,
         id = id ?: 0
+
     )
 }
 
