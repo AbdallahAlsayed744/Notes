@@ -6,7 +6,7 @@ import com.example.notes.core.data.local.Mydatabase
 import com.example.notes.core.domain.repositories.NoteRepo
 import com.example.notes.core.domain.usecase.DeleteItem
 import com.example.notes.core.domain.usecase.GetAllItems
-import com.example.notes.core.domain.reposatory.FakeNoteRepoImpl
+import com.example.notes.core.reposatory.FakeNoteRepoImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +31,7 @@ object Testdbmodule {
     @Provides
     @Singleton
     fun provideNoteRepository(): NoteRepo {
-        return com.example.notes.core.domain.reposatory.FakeNoteRepoImpl()
+        return  FakeNoteRepoImpl()
     }
 
     @Provides
