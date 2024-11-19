@@ -9,6 +9,7 @@ class FakeNoteRepoImpl: NoteRepo {
 
 
     fun shouldHaveFilledList(shouldHaveFilledList: Boolean) {
+
         noteItems =
             if (shouldHaveFilledList) {
                 mutableListOf(
