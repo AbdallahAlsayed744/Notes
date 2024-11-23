@@ -3,14 +3,18 @@ package com.example.notes.core.presentation.di
 import android.app.Application
 import androidx.room.Room
 import com.example.notes.core.data.local.Mydatabase
+import com.example.notes.core.data.remote.imagesapi.ImagesApi
 import com.example.notes.core.data.reposatoreis.NoteRepoImpl
 import com.example.notes.core.domain.repositories.NoteRepo
 import com.example.notes.core.domain.usecase.DeleteItem
 import com.example.notes.core.domain.usecase.GetAllItems
+import com.example.notes.core.domain.usecase.UpsertItem
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -45,5 +49,20 @@ object Appmodule {
     @Singleton
     fun provideDeleteItemUseCase(repo: NoteRepo): DeleteItem {
         return DeleteItem(repo)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpsertItemUseCase(repo: NoteRepo): UpsertItem {
+        return UpsertItem(repo)
+    }
+
+    @Provides
+    @Singleton
+    fun provideimageApi(): ImagesApi {
+        return Retrofit.Builder().baseUrl(ImagesApi.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ImagesApi::class.java)
     }
 }
