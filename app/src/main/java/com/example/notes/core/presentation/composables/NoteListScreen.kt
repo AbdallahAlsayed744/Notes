@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,6 +32,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,35 +52,57 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.notes.R
 import com.example.notes.core.domain.model.noteitem
 import com.example.notes.core.presentation.util.TestTags
+import com.example.notes.core.presentation.viewmodel.NoteViewModel
 
 @Composable
-fun NoteListScreen() {
+fun NoteListScreen(
+    onNavigateToAddNote: () -> Unit,
+    noteListViewModel: NoteViewModel = hiltViewModel(),
+) {
 
+    LaunchedEffect(true) {
+        noteListViewModel.getAllnotes()
+    }
+
+    val ordernoteListState by noteListViewModel.orderstate.collectAsState()
+    val allitems by noteListViewModel.notestatelist.collectAsState()
+
+
+
+
+    NoteListBody(allitems =allitems , onclicktoadd =onNavigateToAddNote, boolean =ordernoteListState , onOrder = {
+        noteListViewModel.OrderByDateorTime()
+    })
+    
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun NoteListBody(allitems:List<noteitem>,onclicktoadd:()->Unit) {
-    val isTime by remember{ mutableStateOf(true)}
+fun NoteListBody( noteListViewModel: NoteViewModel = hiltViewModel(),allitems:List<noteitem>,onclicktoadd:()->Unit,boolean: Boolean,onOrder:()->Unit) {
+
+    val myallitems by noteListViewModel.notestatelist.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             Row (modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween){
-                Text(text = stringResource(id = R.string.notes,"2"), fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                .padding(vertical = 26.dp, horizontal = 20.dp), horizontalArrangement = Arrangement.SpaceBetween){
+                Text(text = stringResource(id = R.string.notes,allitems.size), fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
-                Row (modifier = Modifier){
+                Row (modifier = Modifier.clickable {
+                    onOrder()
+                }){
 
 
-                    Text(text = if(isTime) stringResource(id = R.string.d)else stringResource(id = R.string.t), fontWeight = FontWeight.Bold, fontSize = 19.sp)
+                    Text(text = if(boolean) stringResource(id = R.string.d) else stringResource(id = R.string.t), fontWeight = FontWeight.Bold, fontSize = 19.sp)
                     Spacer(modifier =Modifier.padding(4.dp))
                     Icon(imageVector = Icons.AutoMirrored.Filled.Sort, contentDescription ="" )
 
@@ -104,13 +129,20 @@ fun NoteListBody(allitems:List<noteitem>,onclicktoadd:()->Unit) {
 
     ) {paddingValues ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(
-                top = paddingValues.calculateTopPadding()
-            )
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = paddingValues.calculateTopPadding()
+                ),
+                    contentPadding = PaddingValues(vertical = 32.dp)
         ) {
 
-            items(allitems){
-                NoteListScreenContent(it)
+            items(allitems.size) {index->
+                NoteListScreenContent(allitems[index], onDelete = {
+                    noteListViewModel.deleteItem(myallitems[index])
+
+                })
+
 
             }
 
@@ -124,7 +156,8 @@ fun NoteListBody(allitems:List<noteitem>,onclicktoadd:()->Unit) {
 
 @Composable
 fun NoteListScreenContent(
-    Notintem:noteitem
+    Notintem:noteitem,
+    onDelete: (Int) -> Unit
 ) {
 
     Card(
@@ -154,7 +187,7 @@ fun NoteListScreenContent(
 
 
 
-            Column(modifier = Modifier.padding(10.dp)) {
+            Column(modifier = Modifier.padding(10.dp).fillMaxWidth(0.8f)) {
                 Text(text = Notintem.title, color = Color.White,fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Text(text = Notintem.description, modifier = Modifier.padding(top = 19.dp) ,color = Color.White,fontSize = 16.sp)
 
@@ -167,8 +200,10 @@ fun NoteListScreenContent(
                 modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(start = 70.dp)
-                    .clickable { },
+                    .padding()
+                    .clickable {
+                        onDelete(Notintem.id)
+                    },
                 imageVector = Icons.Default.Clear,
                 contentDescription = TestTags.DELETE_NOTE + Notintem.title,
                 tint = MaterialTheme.colorScheme.onPrimary,

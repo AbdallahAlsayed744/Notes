@@ -4,10 +4,14 @@ import android.app.Application
 import androidx.room.Room
 import com.example.notes.core.data.local.Mydatabase
 import com.example.notes.core.data.remote.imagesapi.ImagesApi
+import com.example.notes.core.data.reposatoreis.imageslistimpl
 import com.example.notes.core.domain.repositories.NoteRepo
+import com.example.notes.core.domain.repositories.imageslist
 import com.example.notes.core.domain.usecase.DeleteItem
 import com.example.notes.core.domain.usecase.GetAllItems
+import com.example.notes.core.domain.usecase.SearchImage
 import com.example.notes.core.domain.usecase.UpsertItem
+import com.example.notes.core.reposatory.FakeImageRepo
 import com.example.notes.core.reposatory.FakeNoteRepoImpl
 import dagger.Module
 import dagger.Provides
@@ -36,6 +40,12 @@ object Testdbmodule {
     @Singleton
     fun provideNoteRepository(): NoteRepo {
         return  FakeNoteRepoImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun providefakeImageRepo(): imageslist {
+        return  FakeImageRepo()
     }
 
     @Provides
@@ -70,5 +80,19 @@ object Testdbmodule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ImagesApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImagesRepository(
+
+    ): imageslist {
+        return FakeImageRepo()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchImageUseCase(myrepo:imageslist): SearchImage {
+        return SearchImage(myrepo)
     }
 }

@@ -14,11 +14,18 @@ fun screen(){
 
     NavHost(navController = navController, startDestination = screen.NoteList){
         composable<screen.NoteList> {
-            NoteListScreen()
+            NoteListScreen(
+                onNavigateToAddNote = {
+                    navController.navigate(screen.AddNote)
+                }
+            )
         }
 
         composable<screen.AddNote> {
-            AddNoteScreen()
+            AddNoteScreen(onSave = {
+                navController.popBackStack()
+            }
+            )
         }
 
 

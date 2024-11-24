@@ -5,9 +5,12 @@ import androidx.room.Room
 import com.example.notes.core.data.local.Mydatabase
 import com.example.notes.core.data.remote.imagesapi.ImagesApi
 import com.example.notes.core.data.reposatoreis.NoteRepoImpl
+import com.example.notes.core.data.reposatoreis.imageslistimpl
 import com.example.notes.core.domain.repositories.NoteRepo
+import com.example.notes.core.domain.repositories.imageslist
 import com.example.notes.core.domain.usecase.DeleteItem
 import com.example.notes.core.domain.usecase.GetAllItems
+import com.example.notes.core.domain.usecase.SearchImage
 import com.example.notes.core.domain.usecase.UpsertItem
 import dagger.Module
 import dagger.Provides
@@ -64,5 +67,19 @@ object Appmodule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ImagesApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImagesRepository(
+        imagesApi: ImagesApi
+    ): imageslist {
+        return imageslistimpl(imagesApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchImageUseCase(myrepo:imageslist): SearchImage {
+        return SearchImage(myrepo)
     }
 }

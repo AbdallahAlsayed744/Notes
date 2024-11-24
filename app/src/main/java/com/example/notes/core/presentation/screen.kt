@@ -9,4 +9,5 @@ sealed interface screen {
 
     @Serializable
     data object AddNote : screen
+
 }

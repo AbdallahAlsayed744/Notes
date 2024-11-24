@@ -1,8 +1,9 @@
 package com.example.notes.core.domain.reposatory
 
 import com.example.notes.core.domain.model.Images
+import com.example.notes.core.domain.repositories.imageslist
 
-class FakeImageRepo {
+class FakeImageRepo: imageslist {
 
 
     var shouldReturnError = false
@@ -11,7 +12,7 @@ class FakeImageRepo {
         shouldReturnError = value
     }
 
-    fun getImages(query: String): Images? {
+    override suspend fun getImages(query: String): Images? {
         return if (shouldReturnError) {
             null
         } else {
