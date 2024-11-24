@@ -134,7 +134,7 @@ fun NoteListBody( noteListViewModel: NoteViewModel = hiltViewModel(),allitems:Li
                 .padding(
                     top = paddingValues.calculateTopPadding()
                 ),
-                    contentPadding = PaddingValues(vertical = 32.dp)
+
         ) {
 
             items(allitems.size) {index->
@@ -142,6 +142,8 @@ fun NoteListBody( noteListViewModel: NoteViewModel = hiltViewModel(),allitems:Li
                     noteListViewModel.deleteItem(myallitems[index])
 
                 })
+
+                Spacer(modifier =Modifier.height(10.dp))
 
 
             }
@@ -187,7 +189,9 @@ fun NoteListScreenContent(
 
 
 
-            Column(modifier = Modifier.padding(10.dp).fillMaxWidth(0.8f)) {
+            Column(modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(0.8f)) {
                 Text(text = Notintem.title, color = Color.White,fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Text(text = Notintem.description, modifier = Modifier.padding(top = 19.dp) ,color = Color.White,fontSize = 16.sp)
 
