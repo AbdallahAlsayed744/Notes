@@ -42,11 +42,11 @@ object Testdbmodule {
         return  FakeNoteRepoImpl()
     }
 
-    @Provides
-    @Singleton
-    fun providefakeImageRepo(): imageslist {
-        return  FakeImageRepo()
-    }
+//    @Provides
+//    @Singleton
+//    fun providefakeImageRepo(): imageslist {
+//        return  FakeImageRepo()
+//    }
 
     @Provides
     @Singleton

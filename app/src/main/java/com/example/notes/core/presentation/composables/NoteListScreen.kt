@@ -94,7 +94,7 @@ fun NoteListBody( noteListViewModel: NoteViewModel = hiltViewModel(),allitems:Li
         topBar = {
             Row (modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 26.dp, horizontal = 20.dp), horizontalArrangement = Arrangement.SpaceBetween){
+                .padding(16.dp).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically ,horizontalArrangement = Arrangement.SpaceBetween){
                 Text(text = stringResource(id = R.string.notes,allitems.size), fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
                 Row (modifier = Modifier.clickable {
@@ -134,6 +134,7 @@ fun NoteListBody( noteListViewModel: NoteViewModel = hiltViewModel(),allitems:Li
                 .padding(
                     top = paddingValues.calculateTopPadding()
                 ),
+            contentPadding = PaddingValues(vertical = 12.dp)
 
         ) {
 
@@ -143,7 +144,7 @@ fun NoteListBody( noteListViewModel: NoteViewModel = hiltViewModel(),allitems:Li
 
                 })
 
-                Spacer(modifier =Modifier.height(10.dp))
+                Spacer(modifier =Modifier.height(16.dp))
 
 
             }
